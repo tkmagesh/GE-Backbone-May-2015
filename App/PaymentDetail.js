@@ -1,32 +1,3 @@
-var PaymentDetail = Backbone.Model.extend({
-    url : 'http://localhost:3000/PaymentDetails/1',
-    intialize : function(){
-    }
-});
-
-var paymentDetailsData = {
-      "id": 1,
-      "BankNo": "Q20",
-      "Batch": "0123",
-      "PaymentNo": "WC804-122914",
-      "PaymnetDate": "13-11-2014",
-      "CMI": "C",
-      "CMINo": "999999999",
-      "BatchDate": "28-06-2014",
-      "Name": "165-PRE AUT",
-      "Currency": "USD",
-      "Model": "Prime",
-      "Imbalance": -100000,
-      "Amount": 100000,
-      "PaymentAdjustmentTransactions": [
-        {
-          "type": "invoice",
-          "id": 201,
-          "Amount": 10000
-        }
-      ]
-    };
-
 var PaymentAdjustmentTransaction = Backbone.Model.extend({
     defaults :{
         id : 0,
@@ -47,15 +18,60 @@ var PaymentAdjustmentTransactions = Backbone.Collection.extend({
     }
 });
 
-var paymentAdjTransactions = new PaymentAdjustmentTransactions()
+var PaymentDetail = Backbone.Model.extend({
+    url : 'http://localhost:3000/PaymentDetails/1',
+    intialize : function(){
+    },
+    addTransaction : function(transaction){
+        this.get('PaymentAdjustmentTransactions').add(transaction);
+    },
+    initialize : function(){
+        var paymentAdjustmentTransactions = new PaymentAdjustmentTransactions();
+        this.listenTo(paymentAdjustmentTransactions, 'add', this.adjustImbalance);
+        this.listenTo(paymentAdjustmentTransactions, 'remove', this.adjustImbalance);
+        this.set('PaymentAdjustmentTransactions', paymentAdjustmentTransactions);
+    },
+    adjustImbalance : function(){
+        var imbalanceAmount = this.get('Amount') - this.get('PaymentAdjustmentTransactions').getTotalAdjustmentAmount();
+        this.set('Imbalance', imbalanceAmount);
+    }
+});
+
+var paymentDetailsData = {
+      "id": 1,
+      "BankNo": "Q20",
+      "Batch": "0123",
+      "PaymentNo": "WC804-122914",
+      "PaymnetDate": "13-11-2014",
+      "CMI": "C",
+      "CMINo": "999999999",
+      "BatchDate": "28-06-2014",
+      "Name": "165-PRE AUT",
+      "Currency": "USD",
+      "Model": "Prime",
+      "Imbalance": -100000,
+      "Amount": 100000,
+      "PaymentAdjustmentTransactions": null
+    };
+
+var paymentDetail = new PaymentDetail(paymentDetailsData);
+
+paymentDetail.addTransaction(new PaymentAdjustmentTransaction({id : 1, amount : 1000}));
+
+paymentDetail.addTransaction(new PaymentAdjustmentTransaction({id : 2, amount : 1000}));
+
+paymentDetail.addTransaction(new PaymentAdjustmentTransaction({id : 3, amount : 3000}));
+
+/*var paymentAdjTransactions = new PaymentAdjustmentTransactions()
 
 paymentAdjTransactions.add(new PaymentAdjustmentTransaction({id : 1, amount : 1000}));
 
 paymentAdjTransactions.add(new PaymentAdjustmentTransaction({id : 2, amount : 2000}));
 
-paymentAdjTransactions.add(new PaymentAdjustmentTransaction({id : 3, amount : 3000}));
+paymentAdjTransactions.add(new PaymentAdjustmentTransaction({id : 3, amount : 3000}));*/
 
 //=======================================================
+/*
 
 var paymentDetailsData = {
       "id": 1,
@@ -91,4 +107,5 @@ paymentDetail.PaymentAdjustmentTransactions.add(new PaymentAdjustmentTransaction
 
 paymentDetail.get("imbalance") //=> 94000
 
+*/
 
