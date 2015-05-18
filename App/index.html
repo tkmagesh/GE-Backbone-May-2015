@@ -6,11 +6,32 @@
     <script src="jquery-1.11.3.js"></script>
     <script src="underscore.js"></script>
     <script src="backbone.js"></script>
+    <script src="handlebars-v3.0.3.js"></script>    
+    
     
     <script src="PaymentDetail.js"></script>
+    <script src="paymentDetailView.js"></script>
+    <script type="text/template" id="paymentViewTemplate">
+        <h3>Payment Details</h3>
+        <div>Id : {{id}}</div>
+        <div>Payment Number : {{PaymentNo}}</div>
+        <div>Payment Date : {{PaymnetDate}}</div>
+        <div>Currency {{Currency}}</div>
+        <div>Amount {{Amount}}</div>
+        <br>
+        <h3>Discounts And Imbalance</h3>
+        <div><span>Imbalance : </span><span  id="imbalance">{{Imbalance}}</span></div>
+    </script>
     
+    <script>
+        
+    </script>
 </head>
 <body>
-    
+    <h1>Payment Allocation</h1>
+    <div class="content">
+        
+    </div>
+
 </body>
 </html>
