@@ -1,0 +1,19 @@
+[
+  {
+    "TC": 530,
+    "DC": "8N",
+    "ARType": 30,
+    "IC": "GEAHN6USD",
+    "InvMemo": "VAR1234",
+    "VarAmt": "183,968.12",
+    "Curr": "USD",
+    "TemCode": "",
+    "ReqNo": 123432,
+    "PONo": "PO1435",
+    "Subs": 3244441,
+    "TrfCust": 32444547,
+    "CostC": "US010",
+    "SP": "9P",
+    "Notes": "Test Notes"
+  }
+]
