@@ -29,3 +29,30 @@ var paymentDetailsData = {
 
 var paymentDetail = new PaymentDetail(paymentDetailsData);
 
+var PaymentAdjustmentTransaction = Backbone.Model.extend({
+    defaults :{
+        id : 0,
+        type : "invoice",
+        instrumentId : 0,
+        date : new Date(),
+        amount : 0
+    }
+});
+
+var PaymentAdjustmentTransactions = Backbone.Collection.extend({
+    model : PaymentAdjustmentTransaction,
+    getTotalAdjustmentAmount : function(){
+        return this.reduce(function(result, tran){
+            return result + tran.get('amount');
+        }, 0);
+    }
+});
+
+var paymentAdjTransactions = new PaymentAdjustmentTransactions()
+
+paymentAdjTransactions.add(new PaymentAdjustmentTransaction({id : 1, amount : 1000}));
+
+paymentAdjTransactions.add(new PaymentAdjustmentTransaction({id : 2, amount : 2000}));
+
+paymentAdjTransactions.add(new PaymentAdjustmentTransaction({id : 3, amount : 3000}));
+
