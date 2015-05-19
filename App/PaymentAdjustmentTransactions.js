@@ -1,4 +1,4 @@
-var PaymentAdjustmentTransactions = Backbone.Collection.extend({
+var PaymentAdjustmentTransactionsCollection = Backbone.Collection.extend({
     model : PaymentAdjustmentTransaction,
     getTotalAdjustmentAmount : function(){
         return this.reduce(function(result, tran){

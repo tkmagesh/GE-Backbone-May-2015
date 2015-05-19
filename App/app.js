@@ -12,7 +12,7 @@ var paymentDetailsData = {
       "Model": "Prime",
       "Imbalance": -100000,
       "Amount": 100000,
-      "PaymentAdjustmentTransactions": null
+      "PaymentAdjustmentTransactions": [{id : 1, amount : 10000},{id : 2, amount : 20000}]
     };
 
 var paymentDetail = new PaymentDetail(paymentDetailsData);

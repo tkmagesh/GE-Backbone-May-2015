@@ -1,6 +1,5 @@
-var PaymentAdjustmentTransaction = Backbone.Model.extend({
+var PaymentAdjustmentTransaction = Backbone.RelationalModel.extend({
     defaults :{
-        id : 0,
         type : "invoice",
         instrumentId : 0,
         date : new Date(),
