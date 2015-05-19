@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="handlebars-v3.0.3.js"></script>
+    <script src="jquery-1.11.3.js"></script>
+    <script src="underscore.js"></script>
+    <script src="backbone.js"></script>
+    <script src="radio.min.js"></script>
+    <script type="text/template" id="productEntryViewTemplate">
+        <form id="productEntryForm">
+            <input type="text" name="name" id="txtProductName">
+            <input type="text" name="cost" id="txtCost">
+            <input type="text" name="units" id="txtUnits">
+            <input type="button" value="Save" id="btnSave">
+        </form>    
+    </script>
+    <script type="text/template" id="cartViewTemplate">
+        <table>
+        <thead>
+            <th>Product Name</th>
+            <th>Cost</th>
+            <th>Units</th>
+        </thead>
+        <tbody>
+            {{#each items}}
+            <tr>
+                <td>{{name}}</td>
+                <td>{{cost}}</td>
+                <td>{{units}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    </script>
+    <script>
+        $.fn.serializeObject = function() {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+                if (o[this.name]) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
+        $(function(){
+            appPresenter.init();
+        });
+        var Product = Backbone.Model.extend({
+        
+        });
+    var ProductView = (function(radio, Product){
+        return Backbone.View.extend({
+            intialize : function(){
+                _.bindAll(this,'broadcastNewProduct');
+            },
+            events : {
+                'click #btnSave' : 'broadcastNewProduct'
+            },
+            broadcastNewProduct : function(){
+                var data = this.$("#productEntryForm").serializeObject();
+                console.log(data);
+                this.model.set(data);
+                radio('productAdded').broadcast(this.model.toJSON());
+            },
+            render : function(){
+                this.$el.append($("#productEntryViewTemplate").html());
+                return this;
+            }
+        });
+    })(radio, Product);
+        
+        
+    var Cart = Backbone.Collection.extend({
+        model : Product,
+        initialize : function(){
+            radio("productAdded").subscribe(function(productData){
+                this.add(new Product(productData));
+            }.bind(this));
+        }
+    });
+    var CartView = (function(radio, Cart){
+        return Backbone.View.extend({
+            initialize : function(){
+                _.bindAll(this, 'render');
+                this.listenTo(this.collection, 'all', this.render);
+            },
+            render : function(){
+                var templateFn = Handlebars.compile($("#cartViewTemplate").html());
+                this.$el.html(templateFn({ items : this.collection.toJSON()}));
+                return this;
+            }
+        });
+    })(radio, Cart);
+    var appPresenter = (function(Product, ProductView, Cart, CartView, radio){
+        return {
+            init : function(){
+                var productView = new ProductView({
+                        model : new Product({name : '', cost : 0, units : 0})
+                });
+                productView.render().$el.appendTo(document.body);                                           
+                var cart = new Cart();
+                var cartView = new CartView({collection : cart});
+                cartView.render().$el.appendTo(document.body);
+            }
+        };
+    })(Product, ProductView, Cart, CartView, radio);
+        
+   
+    </script>
+</head>
+   <body>
+    
+</body>
+</html>
